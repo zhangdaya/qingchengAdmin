@@ -10,19 +10,31 @@ import java.io.Serializable;
 @Table(name="tb_brand")
 public class Brand implements Serializable{
 
+    /**
+     * 品牌id
+     */
 	@Id
-	private Integer id;//品牌id
+	private Integer id;
 
+    /**
+     * 品牌名称
+     */
+	private String name;
 
-	
+    /**
+     * 品牌图片地址
+     */
+	private String image;
 
-	private String name;//品牌名称
+    /**
+     * 品牌的首字母
+     */
+	private String letter;
 
-	private String image;//品牌图片地址
-
-	private String letter;//品牌的首字母
-
-	private Integer seq;//排序
+    /**
+     * 排序
+     */
+	private Integer seq;
 
 	
 	public Integer getId() {
