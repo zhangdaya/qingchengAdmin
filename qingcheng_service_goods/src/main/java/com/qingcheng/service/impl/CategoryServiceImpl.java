@@ -92,7 +92,7 @@ public class CategoryServiceImpl implements CategoryService {
      * @param id
      */
     public void delete(Integer id) {
-        //判断是否存在下级分类
+        //判断是否存在下级分类，有则不能删除
         Example example=new Example(Category.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("parentId",id);

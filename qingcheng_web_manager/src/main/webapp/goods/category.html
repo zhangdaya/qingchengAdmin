@@ -18,9 +18,11 @@
             position: relative;
             overflow: hidden;
         }
+
         .avatar-uploader .el-upload:hover {
             border-color: #409EFF;
         }
+
         .avatar-uploader-icon {
             font-size: 28px;
             color: #8c939d;
@@ -29,6 +31,7 @@
             line-height: 150px;
             text-align: center;
         }
+
         .avatar {
             width: 150px;
             height: 70px;
@@ -41,7 +44,9 @@
 <div id="app">
 
     <div class="content-header">
-        <h1>管理<small>category管理</small></h1>
+        <h1>管理
+            <small>category管理</small>
+        </h1>
         <el-breadcrumb separator-class="el-icon-arrow-right" class="breadcrumb">
             <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
             <el-breadcrumb-item>管理</el-breadcrumb-item>
@@ -52,129 +57,138 @@
     <div class="app-container">
         <div class="box">
             <div class="filter-container">
-                <el-button type="primary"  class="butT" @click="formVisible=true;pojo={parentId: searchMap.parentId }">新增</el-button>
-                <el-button type="primary"  class="butT" @click="returnQuery()">返回上级</el-button>
+                <el-button type="primary" class="butT" @click="formVisible=true;pojo={parentId: searchMap.parentId }">
+                    新增
+                </el-button>
+                <el-button type="primary" class="butT" @click="returnQuery()">返回上级</el-button>
             </div>
 
             <el-table :data="tableData" border style="width: 100%">
-                          <el-table-column prop="id" label="分类ID" width="80"></el-table-column>
-          <el-table-column prop="name" label="分类名称" width="200"></el-table-column>
-          <el-table-column prop="goodsNum" label="商品数量" width="80"></el-table-column>
+                <el-table-column prop="id" label="分类ID" width="80"></el-table-column>
+                <el-table-column prop="name" label="分类名称" width="200"></el-table-column>
+                <el-table-column prop="goodsNum" label="商品数量" width="80"></el-table-column>
 
-           <el-table-column label="级别" width="80">
-               <template slot-scope="scope">
-                   {{parentIds.length+1}}
-               </template>
-           </el-table-column>
-          <el-table-column  label="是否显示" width="80">
-              <template slot-scope="scope">
-                  <el-switch
-                          v-model="scope.row.isShow"
-                          active-color="#13ce66"
-                          inactive-color="#ff4949"
-                          active-value="1"
-                          inactive-value="0">
-                  </el-switch>
-              </template>
-
-          </el-table-column>
-          <el-table-column label="是否导航" width="80">
-              <template slot-scope="scope">
-                  <el-switch
-                          v-model="scope.row.isMenu"
-                          active-color="#13ce66"
-                          inactive-color="#ff4949"
-                          active-value="1"
-                          inactive-value="0">
-                  </el-switch>
-              </template>
-          </el-table-column>
-          <el-table-column prop="seq" label="排序" width="80"></el-table-column>
-          <el-table-column  label="模板" width="200">
-              <template slot-scope="scope">
-                  <el-select v-model="scope.row.templateId" disabled placeholder="请选择">
-                      <el-option
-                              v-for="item in templateList"
-                              :key="item.id"
-                              :label="item.name"
-                              :value="item.id">
-                      </el-option>
-                  </el-select>
-              </template>
-          </el-table-column>
-                <el-table-column
-                        label="设置"  >
+                <el-table-column label="级别" width="80">
                     <template slot-scope="scope">
-                        <el-button v-if="parentIds.length<2" @click="queryByParentId(scope.row.id)" size="mini" type="primary" size="small">查看下级</el-button>
+                        <!--没有点击查看下级时，这个数组长度是0-->
+                        {{parentIds.length+1}}
+                    </template>
+                </el-table-column>
+                <el-table-column label="是否显示" width="80">
+                    <template slot-scope="scope">
+                        <el-switch
+                                v-model="scope.row.isShow"
+                                active-color="#13ce66"
+                                inactive-color="#ff4949"
+                                active-value="1"
+                                inactive-value="0">
+                        </el-switch>
+                    </template>
+
+                </el-table-column>
+                <el-table-column label="是否导航" width="80">
+                    <template slot-scope="scope">
+                        <el-switch
+                                v-model="scope.row.isMenu"
+                                active-color="#13ce66"
+                                inactive-color="#ff4949"
+                                active-value="1"
+                                inactive-value="0">
+                        </el-switch>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="seq" label="排序" width="80"></el-table-column>
+                <el-table-column label="模板" width="200">
+                    <template slot-scope="scope">
+                        <el-select v-model="scope.row.templateId" disabled placeholder="请选择">
+                            <el-option
+                                    v-for="item in templateList"
+                                    :key="item.id"
+                                    :label="item.name"
+                                    :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        label="设置">
+                    <template slot-scope="scope">
+                        <el-button v-if="parentIds.length<2" @click="queryByParentId(scope.row.id)" size="mini"
+                                   type="primary" size="small">查看下级
+                        </el-button>
 
                     </template>
                 </el-table-column>
 
-                    <el-table-column
-                            label="操作"  >
-                        <template slot-scope="scope">
-                            <el-button @click="edit(scope.row.id)" size="mini" type="primary" size="small">修改</el-button>
-                            <el-button @click="dele(scope.row.id)" size="mini" type="danger" size="small">删除</el-button>
-                        </template>
-                    </el-table-column>
+                <el-table-column
+                        label="操作">
+                    <template slot-scope="scope">
+                        <el-button @click="edit(scope.row.id)" size="mini" type="primary" size="small">修改</el-button>
+                        <el-button @click="dele(scope.row.id)" size="mini" type="danger" size="small">删除</el-button>
+                    </template>
+                </el-table-column>
             </el-table>
 
             <div class="add-form">
                 <!--弹出窗口-->
-                <el-dialog  title="编辑" :visible.sync="formVisible" >
+                <el-dialog title="编辑" :visible.sync="formVisible">
                     <el-form label-width="80px">
-                                <el-form-item label="分类名称"><el-input v-model="pojo.name"></el-input></el-form-item>
+                        <el-form-item label="分类名称">
+                            <el-input v-model="pojo.name"></el-input>
+                        </el-form-item>
 
-        <el-form-item label="是否显示">
-            <el-switch
-                    v-model="pojo.isShow"
-                    active-color="#13ce66"
-                    inactive-color="#ff4949"
-                    active-value="1"
-                    inactive-value="0">
-            </el-switch>
-        </el-form-item>
-        <el-form-item label="是否导航">
-            <el-switch
-                    v-model="pojo.isMenu"
-                    active-color="#13ce66"
-                    inactive-color="#ff4949"
-                    active-value="1"
-                    inactive-value="0">
-            </el-switch>
-        </el-form-item>
-        <el-form-item label="排序"><el-input v-model="pojo.seq"></el-input></el-form-item>
+                        <el-form-item label="是否显示">
+                            <el-switch
+                                    v-model="pojo.isShow"
+                                    active-color="#13ce66"
+                                    inactive-color="#ff4949"
+                                    active-value="1"
+                                    inactive-value="0">
+                            </el-switch>
+                        </el-form-item>
+                        <el-form-item label="是否导航">
+                            <el-switch
+                                    v-model="pojo.isMenu"
+                                    active-color="#13ce66"
+                                    inactive-color="#ff4949"
+                                    active-value="1"
+                                    inactive-value="0">
+                            </el-switch>
+                        </el-form-item>
+                        <el-form-item label="排序">
+                            <el-input v-model="pojo.seq"></el-input>
+                        </el-form-item>
 
-        <el-form-item label="模板ID">
-            <el-select v-model="pojo.templateId" filterable placeholder="请选择">
-                <el-option
-                        v-for="item in templateList"
-                        :key="item.id"
-                        :label="item.name"
-                        :value="item.id">
-                </el-option>
-            </el-select>
+                        <el-form-item label="模板ID">
+                            <el-select v-model="pojo.templateId" filterable placeholder="请选择">
+                                <el-option
+                                        v-for="item in templateList"
+                                        :key="item.id"
+                                        :label="item.name"
+                                        :value="item.id">
+                                </el-option>
+                            </el-select>
 
-        </el-form-item>
+                        </el-form-item>
 
-                            <!-- 图片上传代码 如页面有图片上传功能放开注释 ****
-                            <el-form-item label="图片">
-                                <el-upload
-                                        class="avatar-uploader"
-                                        action="/upload/native.do"
-                                        :show-file-list="false"
-                                        :on-success="handleAvatarSuccess"
-                                        :before-upload="beforeAvatarUpload">
-                                    <img v-if="imageUrl" :src="imageUrl" class="avatar">
-                                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                                </el-upload>
-                            </el-form-item>
-                            -->
+                        <!-- 图片上传代码 如页面有图片上传功能放开注释 ****
+                        <el-form-item label="图片">
+                            <el-upload
+                                    class="avatar-uploader"
+                                    action="/upload/native.do"
+                                    :show-file-list="false"
+                                    :on-success="handleAvatarSuccess"
+                                    :before-upload="beforeAvatarUpload">
+                                <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                            </el-upload>
+                        </el-form-item>
+                        -->
 
-                            <el-form-item>
-                                <el-button type="primary" @click="save()">保存</el-button>
-                                <el-button @click="formVisible = false" >关闭</el-button>
-                            </el-form-item>
+                        <el-form-item>
+                            <el-button type="primary" @click="save()">保存</el-button>
+                            <el-button @click="formVisible = false">关闭</el-button>
+                        </el-form-item>
                     </el-form>
                 </el-dialog>
             </div>
@@ -189,40 +203,41 @@
 <script src="/js/axios.js"></script>
 <script src="/js/elementui.js"></script>
 <script>
-     new Vue({
+    new Vue({
         el: '#app',
-        data(){
+        data() {
             return {
                 tableData: [],
-                searchMap: {parentId:0},
+                searchMap: {parentId: 0},
                 pojo: {},
                 formVisible: false,
                 imageUrl: '',
-                parentIds:[],
-                templateList:[]
+                parentIds: [],
+                templateList: []
             }
         },
-        created(){
+        created() {
             this.fetchData();
             //加载模板列表
-            axios.get(`/template/findAll.do`).then(  response=>{
-                this.templateList=response.data
+            axios.get(`/template/findAll.do`).then(response => {
+                this.templateList = response.data
             })
         },
-        methods:{
-            fetchData (){
-                axios.post(`/category/findList.do`,this.searchMap).then(response => {
+        methods: {
+            fetchData() {
+                //按条件查询，不需要分页
+                axios.post(`/category/findList.do`, this.searchMap).then(response => {
                     this.tableData = response.data
                 });
             },
-            save (){
+            save() {
                 // this.pojo.image= this.imageUrl; //如页面有图片上传功能放开注释
-                axios.post(`/category/${this.pojo.id==null?'add':'update'}.do`,this.pojo).then(response => {
-                    this.fetchData (); //刷新列表
-                    this.formVisible = false ;//关闭窗口
+                axios.post(`/category/${this.pojo.id == null ? 'add' : 'update'}.do`, this.pojo).then(response => {
+                    this.fetchData(); //刷新列表
+                    this.formVisible = false;//关闭窗口
                 });
             },
-            edit (id){
+            edit(id) {
                 this.formVisible = true // 打开窗口
                 // 调用查询
                 axios.get(`/category/findById.do?id=${id}`).then(response => {
@@ -230,36 +245,40 @@
                     // this.imageUrl=this.pojo.image //显示图片  如页面有图片上传功能放开注释
                 })
             },
-            dele (id){
+            dele(id) {
                 this.$confirm('确定要删除此记录吗?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
-                }).then( () => {
+                }).then(() => {
                     axios.get(`/category/delete.do?id=${id}`).then(response => {
-                        if(response.data.code==0){
-                            this.fetchData (); //刷新列表
-                        }else{
+                        if (response.data.code == 0) {
+                            this.fetchData(); //刷新列表
+                        } else {
                             this.$alert(response.data.message)
                         }
 
                     })
                 })
             },
-            queryByParentId(parentId){
+            queryByParentId(id) {
                 //做记号
+                //每点击一次下一级，向数组里按顺序添加一个id
+                //push() 方法可向数组的末尾添加一个或多个元素,并返回新的长度
                 this.parentIds.push(this.searchMap.parentId)
-                this.searchMap.parentId =parentId
+                //查询集合的parentId需要改变（这样页面就变成parentId相同的数据所在页面）
+                this.searchMap.parentId = id
                 this.fetchData()
             },
-            returnQuery(){
-                if(this.parentIds.length>0){
-                    this.searchMap.parentId =this.parentIds[ this.parentIds.length-1 ]
-                    this.parentIds.splice( this.parentIds.length-1,1  ) //删除数组最后一个元素
+            returnQuery() {
+                if (this.parentIds.length > 0) {
+                    //查询集合的parentId需要改变（这样页面就变成parentId相同的数据所在页面）
+                    this.searchMap.parentId = this.parentIds[this.parentIds.length - 1]
+                    this.parentIds.splice(this.parentIds.length - 1, 1) //删除数组最后一个元素
                     this.fetchData()
                 }
             }
-			/* ****图片上传相关代码  如页面有图片上传功能放开注释 **** 
+            /* ****图片上传相关代码  如页面有图片上传功能放开注释 ****
             handleAvatarSuccess(res, file) {
                 this.imageUrl = file.response;
             },

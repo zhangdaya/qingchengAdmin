@@ -10,25 +10,47 @@ import java.io.Serializable;
 @Table(name="tb_category")
 public class Category implements Serializable{
 
+	/**
+	 *分类ID
+	 * 如果实体类中没有一个标记 @Id 的字段，当你使用带有 ByPrimaryKey 的方法时，
+	 * 所有的字段会作为联合主键来使用，也就会出现类似 where id = ? and countryname = ? and countrycode = ?的情况。
+	 */
 	@Id
-	private Integer id;//分类ID
+	private Integer id;
 
+	/**
+	 *分类名称
+	 */
+	private String name;
 
-	
+	/**
+	 *商品数量
+	 */
+	private Integer goodsNum;
 
-	private String name;//分类名称
+	/**
+	 *是否显示
+	 */
+	private String isShow;
+	/**
+	 *是否导航
+	 */
+	private String isMenu;
 
-	private Integer goodsNum;//商品数量
+	/**
+	 *排序
+	 */
+	private Integer seq;
 
-	private String isShow;//是否显示
+	/**
+	 *上级ID
+	 */
+	private Integer parentId;
 
-	private String isMenu;//是否导航
-
-	private Integer seq;//排序
-
-	private Integer parentId;//上级ID
-
-	private Integer templateId;//模板ID
+	/**
+	 *模板ID
+	 */
+	private Integer templateId;
 
 	
 	public Integer getId() {
