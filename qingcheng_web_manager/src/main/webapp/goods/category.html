@@ -254,7 +254,7 @@
                     axios.get(`/category/delete.do?id=${id}`).then(response => {
                         if (response.data.code == 0) {
                             this.fetchData(); //刷新列表
-                        } else {
+                        } else if (response.data.code == 1){
                             this.$alert(response.data.message)
                         }
 

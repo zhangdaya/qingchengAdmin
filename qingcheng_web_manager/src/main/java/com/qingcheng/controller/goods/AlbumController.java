@@ -36,9 +36,18 @@ public class AlbumController {
         return  albumService.findPage(searchMap,page,size);
     }
 
+
     @GetMapping("/findById")
     public Album findById(Long id){
         return albumService.findById(id);
+    }
+
+    /**
+     *分页+条件查询(用于album_list页面）
+     */
+    @PostMapping("/findPageAlbumList")
+    public PageResult<Album> findPageAlbumList(@RequestParam Long id,int page, int size){
+        return  albumService.findPageAlbumList(id,page,size);
     }
 
 

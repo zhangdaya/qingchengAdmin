@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>album管理</title>
+    <title>album_list管理</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!-- 引入样式 -->
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
@@ -45,12 +45,12 @@
 
     <div class="content-header">
         <h1>管理
-            <small>album管理</small>
+            <small>spec管理</small>
         </h1>
         <el-breadcrumb separator-class="el-icon-arrow-right" class="breadcrumb">
             <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
             <el-breadcrumb-item>管理</el-breadcrumb-item>
-            <el-breadcrumb-item>album管理</el-breadcrumb-item>
+            <el-breadcrumb-item>album_list管理</el-breadcrumb-item>
         </el-breadcrumb>
     </div>
 
@@ -59,32 +59,33 @@
             <div class="filter-container">
                 <!--查询表单-->
                 <el-form :inline="true">
-                    <el-form-item label="相册名称">
-                        <el-input v-model="searchMap.title" placeholder="相册名称" class="filter-item"></el-input>
-                    </el-form-item>
-
-                    <el-button class="dalfBut" @click="fetchData()">查询</el-button>
-                    <el-button type="primary" class="butT" @click="formVisible=true;pojo={}">新增</el-button>
+                    <el-button type="primary" class="butT" @click="formVisible=true;pojo={id: MyId }">新增
+                    </el-button>
+                    <el-button type="primary" onclick="location.href='album.html'">返回</el-button>
                 </el-form>
             </div>
 
             <el-table :data="tableData" border style="width: 100%">
-                <el-table-column prop="id" label="编号" width="100"></el-table-column>
-                <el-table-column prop="title" label="相册名称" width="200"></el-table-column>
-                <el-table-column label="封面" width="200">
-                    <template slot-scope="scope">
-                        <img :src="scope.row.image" width="100px" height="50px">
+               <!-- <el-table-column prop="imageItems"  width="1000px" >
+                    <template scope="scope">
+                        <img 　v-for="item in scope.row.imageItems.split(',')"  :src="item" width="40" height="40"/>
                     </template>
+                </el-table-column>-->
+                <el-table-column prop="imageItems" label="相册列表" width="1000px" >
+                    <template slot-scope="scope">
+                        <img :src="item" v-for="item in scope.row.imageItems.split(',')" width="40" height="40" />
+                    </template>
+                <!--    <el-table-column prop="imageItems" label="微信昵称" width="100" :show-overflow-tooltip="true">
+                        <template slot-scope="scope">
+                            <span v-for=" (item,index) in scope.row.imageItems.split(',')" v-if="item!=undefined">{{item && item.url}}</span>
+                        </template>
+                    </el-table-column>-->
+
                 </el-table-column>
-                <el-table-column prop="imageNum" label="图片数量" width="100"></el-table-column>
-                <el-table-column prop="seq" label="排序" width="100"></el-table-column>
-                <el-table-column prop="imageDesc" label="描述" width="300"></el-table-column>
-                <!-- <el-table-column prop="imageItems" label="图片列表" width="80"></el-table-column>-->
 
                 <el-table-column
                         label="操作">
                     <template slot-scope="scope">
-                        <el-button @click="goAlbumList(scope.row.id)" size="mini" type="success" size="small">图片列表</el-button>
                         <el-button @click="edit(scope.row.id)" size="mini" type="primary" size="small">修改</el-button>
                         <el-button @click="dele(scope.row.id)" size="mini" type="danger" size="small">删除</el-button>
                     </template>
@@ -106,11 +107,21 @@
                 <!--弹出窗口-->
                 <el-dialog title="编辑" :visible.sync="formVisible">
                     <el-form label-width="80px">
-                        <el-form-item label="相册名称">
-                            <el-input v-model="pojo.title"></el-input>
+                        <el-form-item label="名称">
+                            <el-input v-model="pojo.name"></el-input>
                         </el-form-item>
-                        <!-- 图片上传代码 如页面有图片上传功能放开注释 -->
-                        <el-form-item label="相册封面">
+                        <el-form-item label="规格选项">
+                            <el-input v-model="pojo.options"
+                                      type="textarea"
+                                      :autosize="{ minRows: 2, maxRows: 4}">
+                            </el-input>
+
+                        </el-form-item>
+                        <el-form-item label="排序">
+                            <el-input v-model="pojo.seq"></el-input>
+                        </el-form-item>
+                        <!-- 图片上传代码 如页面有图片上传功能放开注释 ****
+                        <el-form-item label="图片">
                             <el-upload
                                     class="avatar-uploader"
                                     action="/upload/native.do"
@@ -121,20 +132,7 @@
                                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                             </el-upload>
                         </el-form-item>
-                        <el-form-item label="商品数量">
-                            <el-input v-model="pojo.imageNum"></el-input>
-                        </el-form-item>
-                        <el-form-item label="排序">
-                            <el-input v-model="pojo.seq"></el-input>
-                        </el-form-item>
-                        <el-form-item label="描述">
-                            <el-input v-model="pojo.imageDesc"
-                                      type="textarea"
-                                      :autosize="{ minRows: 2, maxRows: 4}">
-                            </el-input>
-                        </el-form-item>
-
-
+                        -->
 
                         <el-form-item>
                             <el-button type="primary" @click="save()">保存</el-button>
@@ -153,33 +151,59 @@
 <script src="/js/vue.js"></script>
 <script src="/js/axios.js"></script>
 <script src="/js/elementui.js"></script>
+<script src="/js/util.js"></script>
 <script>
     new Vue({
         el: '#app',
         data() {
+            //return中相当于定义初始值
             return {
                 tableData: [],
                 currentPage: 1,
                 total: 10,
                 size: 10,
-                searchMap: {},
+                searchMap_list: {},
                 pojo: {},
                 formVisible: false,
-                imageUrl: ''
+                imageUrl: '',
+                MyId: 0,
+                imageItems : {
+                    url : "",
+                    uid : "",
+                    status:""
+                }
             }
         },
         created() {
-            this.fetchData();
+            this.$nextTick(function(){
+                this.MyId = getQueryString('id');
+                this.searchMap_list = {id: getQueryString('id')}
+                this.fetchData();
+            });
+            /*    //给MyId赋值，使其对于你接收过来的参数也就是 e.g. MyId = 42
+                this.MyId = getQueryString('id');
+                console.log( this.MyId+'张1');
+                //静态页面接收参数后：在初始页面模拟为条件查询，将id作为一个查询条件
+                //给searchMap这个查询集合赋初始值
+                this.searchMap_list = {id: getQueryString('id')}
+                console.log( this.searchMap_list.id+'张2');*/
         },
         methods: {
             fetchData() {
-                axios.post(`/album/findPage.do?page=${this.currentPage}&size=${this.size}`, this.searchMap).then(response => {
+                //条件分页查询
+                axios.post(`/album/findPageAlbumList.do?id=${this.MyId}&page=${this.currentPage}&size=${this.size}`).then(response => {
                     this.tableData = response.data.rows;
                     this.total = response.data.total;
+                    var zhang = response.data.rows[0].imageItems;
+                    var str = zhang.split(",");
+                    console.log(zhang.url)
+                    console.log(str)
                 });
             },
             save() {
-                this.pojo.image= this.imageUrl; //如页面有图片上传功能放开注释
+                // this.pojo.image= this.imageUrl; //如页面有图片上传功能放开注释
+                //替换replace（），本例中将回车替换为逗号
+                this.pojo.options = this.pojo.options.replace(/\n/g, ",")
                 axios.post(`/album/${this.pojo.id == null ? 'add' : 'update'}.do`, this.pojo).then(response => {
                     this.fetchData(); //刷新列表
                     this.formVisible = false;//关闭窗口
@@ -190,7 +214,9 @@
                 // 调用查询
                 axios.get(`/album/findById.do?id=${id}`).then(response => {
                     this.pojo = response.data;
-                    this.imageUrl=this.pojo.image //显示图片  如页面有图片上传功能放开注释
+                    // this.imageUrl=this.pojo.image //显示图片  如页面有图片上传功能放开注释
+                    //替换replace（），本例中将逗号替换为回车
+                    this.pojo.options = this.pojo.options.replace(/,/g, "\n")
                 })
             },
             dele(id) {
@@ -204,10 +230,7 @@
                     })
                 })
             },
-            goAlbumList(id){
-                location.href = `album_list.html?id=` + id
-            },
-             /**图片上传相关代码  如页面有图片上传功能放开注释 **/
+            /* ****图片上传相关代码  如页面有图片上传功能放开注释 ****
             handleAvatarSuccess(res, file) {
                 this.imageUrl = file.response;
             },
@@ -222,7 +245,7 @@
                     this.$message.error('上传头像图片大小不能超过 2MB!');
                 }
                 return isJPG && isLt2M;
-            }
+            }*/
         }
     })
 </script>
