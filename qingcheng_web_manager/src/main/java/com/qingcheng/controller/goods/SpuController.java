@@ -73,4 +73,41 @@ public class SpuController {
         return goodsById;
     }
 
+    /**
+     *因为message值可能过长，所以用一个map传这三个值
+     * @param map
+     */
+    @PostMapping("/audit")
+    public Result audit(Map<String,String> map){
+        spuService.audit(map.get("id"),map.get("status"),map.get("message"));
+        return new Result();
+    }
+
+    /**
+     * 商品下架
+     */
+    @GetMapping("/pull")
+    public Result pull(String id){
+        spuService.pull(id);
+        return new Result();
+    }
+
+    /**
+     * 商品下架
+     */
+    @GetMapping("/put")
+    public Result put(String id){
+        spuService.put(id);
+        return new Result();
+    }
+
+    /**
+     * 批量上架
+     * 处理后给前端返回处理的条数：返回值int
+     */
+    @GetMapping("/putMany")
+    public Result  putMany(String[] ids){
+        int count = spuService.putMany(ids);
+        return new Result(0,"上架"+count+"个商品");
+    }
 }

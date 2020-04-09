@@ -44,4 +44,26 @@ public interface SpuService {
      * @param id
      */
     public Goods findGoodsById(String id);
+
+    /**
+     * 商品审核(audit)
+     * @param id,status,message
+     */
+    public void audit(String id,String status,String message);
+
+    /**
+     * 商品下架
+     */
+    public void pull(String id);
+
+    /**
+     * 商品上架
+     */
+    public void put(String id);
+
+    /**
+     * 批量上架
+     * 处理后给前端返回处理的条数：返回值int
+     */
+    public int putMany(String[] ids);
 }
