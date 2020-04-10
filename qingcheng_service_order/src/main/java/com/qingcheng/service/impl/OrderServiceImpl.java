@@ -2,21 +2,39 @@ package com.qingcheng.service.impl;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.qingcheng.dao.OrderItemMapper;
+import com.qingcheng.dao.OrderLogMapper;
 import com.qingcheng.dao.OrderMapper;
 import com.qingcheng.entity.PageResult;
 import com.qingcheng.pojo.order.Order;
+import com.qingcheng.pojo.order.OrderItem;
+import com.qingcheng.pojo.order.OrderLog;
+import com.qingcheng.pojo.order.Orders;
 import com.qingcheng.service.order.OrderService;
+import com.qingcheng.util.IdWorker;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-@Service
+@Service(interfaceClass = OrderService.class)
 public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private OrderMapper orderMapper;
+
+    @Autowired
+    private OrderItemMapper orderItemMapper;
+
+    @Autowired
+    private IdWorker idWorker;
+
+    @Autowired
+    private OrderLogMapper orderLogMapper;
 
     /**
      * 返回全部记录
@@ -46,6 +64,67 @@ public class OrderServiceImpl implements OrderService {
     public List<Order> findList(Map<String, Object> searchMap) {
         Example example = createExample(searchMap);
         return orderMapper.selectByExample(example);
+    }
+
+    /**
+     * 2.4.1.根据选中的ID查询未发货订单
+     * 后端编写方法，根据id数组查询未发货订单，前端向后端传递id数据和consignStatus状态，后端返回给前端订单列表
+     * @param ids
+     * @param consignStatus
+     * @return
+     */
+    public List<Order> findList1(String[] ids,String consignStatus) {
+        Example example=new Example(Order.class);
+        Example.Criteria criteria = example.createCriteria();
+        //数组转换为集合List ：Arrays.asList(ids)
+        criteria.andIn("id",Arrays.asList(ids));
+        //批量发货只包括等待发货状态的订单；
+        criteria.andEqualTo("consignStatus",0);
+
+        List<Order> order = orderMapper.selectByExample(example);
+        return order;
+    }
+
+    /**
+     * 批量发货
+     * 批量发货，前端给后端发送订单集合（post），后端代码接受后批量修改订单状态、发货状态、发货时间
+     * @param orders
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void batchSend(List<Order> orders) {
+        //判断运单号和物流公司是否为空
+        for (Order o : orders ){
+            if (o.getShippingCode()==null|| o.getShippingName()==null){
+                throw new RuntimeException("请选择快递公司和填写快递单号");
+            }
+        }
+        //循环订单
+        for (Order order : orders ){
+            //将订单状态变为已发货：2
+            order.setOrderStatus("2");
+            //将发货状态变为已发货：1
+            order.setConsignStatus("1");
+            //发货时间也改变
+            order.setConsignTime(new Date());
+            orderMapper.updateByPrimaryKeySelective(order);
+            //============================================================
+            //记录订单日志
+            OrderLog orderLog=new OrderLog();
+            orderLog.setId(idWorker.nextId()+"" );
+            //系统
+            orderLog.setOperater("system");
+            //操作时间
+            orderLog.setOperateTime(new Date());
+            //订单状态：已发货
+            orderLog.setOrderStatus("2");
+            //支付状态:已支付
+            orderLog.setPayStatus("1");
+            //将发货状态变为已发货：1
+            orderLog.setConsignStatus("1");
+
+            orderLog.setOrderId(order.getId());
+            orderLogMapper.insert(orderLog);
+        }
     }
 
     /**
@@ -93,6 +172,26 @@ public class OrderServiceImpl implements OrderService {
      */
     public void delete(String id) {
         orderMapper.deleteByPrimaryKey(id);
+    }
+
+    /**
+     * 查询订单id
+     * @param id
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public Orders findOrdersById(String id) {
+        //查询order的id
+        Order order = orderMapper.selectByPrimaryKey(id);
+        //查询orderItem的id
+        Example example=new Example(OrderItem.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("orderId",id);
+        List<OrderItem> orderItems = orderItemMapper.selectByExample(example);
+        //组合成orders
+        Orders orders = new Orders();
+        orders.setOrder(order);
+        orders.setOrderItemList(orderItems);
+        return orders;
     }
 
     /**
@@ -188,6 +287,10 @@ public class OrderServiceImpl implements OrderService {
             // 实付金额
             if(searchMap.get("payMoney")!=null ){
                 criteria.andEqualTo("payMoney",searchMap.get("payMoney"));
+            }
+            // 根据 id 数组查询
+            if(searchMap.get("ids")!=null ){
+                criteria.andIn("id", Arrays.asList((String[])searchMap.get("ids")));
             }
 
         }

@@ -31,7 +31,22 @@ public interface SpuService {
     public void update(Spu spu);
 
 
-    public void delete(String id);
+    /**
+     *  真删除商品
+     * @param id
+     */
+    public void realdelete(String id);
+
+    /**
+     *  假删除商品
+     * @param id
+     */
+    public void falsedelete(String id);
+
+    /**
+     * 回收商品，修改spu表is_delete字段为0
+     */
+    public void restore(String id);
 
     /**
      * 保存商品
@@ -66,4 +81,5 @@ public interface SpuService {
      * 处理后给前端返回处理的条数：返回值int
      */
     public int putMany(String[] ids);
+
 }

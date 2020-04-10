@@ -76,15 +76,16 @@
                         <img :src="scope.row.image" width="100px" height="50px">
                     </template>
                 </el-table-column>
-                <el-table-column prop="imageNum" label="图片数量" width="100"></el-table-column>
-                <el-table-column prop="seq" label="排序" width="100"></el-table-column>
+                <el-table-column prop="imageNum" label="图片数量" width="80"></el-table-column>
+                <el-table-column prop="seq" label="排序" width="80"></el-table-column>
                 <el-table-column prop="imageDesc" label="描述" width="300"></el-table-column>
                 <!-- <el-table-column prop="imageItems" label="图片列表" width="80"></el-table-column>-->
 
                 <el-table-column
                         label="操作">
                     <template slot-scope="scope">
-                        <el-button @click="goAlbumList(scope.row.id)" size="mini" type="success" size="small">图片列表</el-button>
+                        <el-button @click="goAlbumList(scope.row.id)" size="mini" type="success" size="small">图片列表
+                        </el-button>
                         <el-button @click="edit(scope.row.id)" size="mini" type="primary" size="small">修改</el-button>
                         <el-button @click="dele(scope.row.id)" size="mini" type="danger" size="small">删除</el-button>
                     </template>
@@ -135,7 +136,6 @@
                         </el-form-item>
 
 
-
                         <el-form-item>
                             <el-button type="primary" @click="save()">保存</el-button>
                             <el-button @click="formVisible = false">关闭</el-button>
@@ -179,7 +179,7 @@
                 });
             },
             save() {
-                this.pojo.image= this.imageUrl; //如页面有图片上传功能放开注释
+                this.pojo.image = this.imageUrl; //如页面有图片上传功能放开注释
                 axios.post(`/album/${this.pojo.id == null ? 'add' : 'update'}.do`, this.pojo).then(response => {
                     this.fetchData(); //刷新列表
                     this.formVisible = false;//关闭窗口
@@ -190,7 +190,7 @@
                 // 调用查询
                 axios.get(`/album/findById.do?id=${id}`).then(response => {
                     this.pojo = response.data;
-                    this.imageUrl=this.pojo.image //显示图片  如页面有图片上传功能放开注释
+                    this.imageUrl = this.pojo.image //显示图片  如页面有图片上传功能放开注释
                 })
             },
             dele(id) {
@@ -204,10 +204,10 @@
                     })
                 })
             },
-            goAlbumList(id){
+            goAlbumList(id) {
                 location.href = `album_list.html?id=` + id
             },
-             /**图片上传相关代码  如页面有图片上传功能放开注释 **/
+            /**图片上传相关代码  如页面有图片上传功能放开注释 **/
             handleAvatarSuccess(res, file) {
                 this.imageUrl = file.response;
             },

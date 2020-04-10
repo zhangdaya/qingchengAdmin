@@ -17,54 +17,54 @@ public class AlbumController {
     private AlbumService albumService;
 
     @GetMapping("/findAll")
-    public List<Album> findAll(){
+    public List<Album> findAll() {
         return albumService.findAll();
     }
 
     @GetMapping("/findPage")
-    public PageResult<Album> findPage(int page, int size){
+    public PageResult<Album> findPage(int page, int size) {
         return albumService.findPage(page, size);
     }
 
     @PostMapping("/findList")
-    public List<Album> findList(@RequestBody Map<String,Object> searchMap){
+    public List<Album> findList(@RequestBody Map<String, Object> searchMap) {
         return albumService.findList(searchMap);
     }
 
     @PostMapping("/findPage")
-    public PageResult<Album> findPage(@RequestBody Map<String,Object> searchMap,int page, int size){
-        return  albumService.findPage(searchMap,page,size);
+    public PageResult<Album> findPage(@RequestBody Map<String, Object> searchMap, int page, int size) {
+        return albumService.findPage(searchMap, page, size);
     }
 
 
     @GetMapping("/findById")
-    public Album findById(Long id){
+    public Album findById(Long id) {
         return albumService.findById(id);
     }
 
     /**
-     *分页+条件查询(用于album_list页面）
+     * 分页+条件查询(用于album_list页面）
      */
     @PostMapping("/findPageAlbumList")
-    public PageResult<Album> findPageAlbumList(@RequestParam Long id,int page, int size){
-        return  albumService.findPageAlbumList(id,page,size);
+    public PageResult<Album> findPageAlbumList(@RequestParam Long id, int page, int size) {
+        return albumService.findPageAlbumList(id, page, size);
     }
 
 
     @PostMapping("/add")
-    public Result add(@RequestBody Album album){
+    public Result add(@RequestBody Album album) {
         albumService.add(album);
         return new Result();
     }
 
     @PostMapping("/update")
-    public Result update(@RequestBody Album album){
+    public Result update(@RequestBody Album album) {
         albumService.update(album);
         return new Result();
     }
 
     @GetMapping("/delete")
-    public Result delete(Long id){
+    public Result delete(Long id) {
         albumService.delete(id);
         return new Result();
     }

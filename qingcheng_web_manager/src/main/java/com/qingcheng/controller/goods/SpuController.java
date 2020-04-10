@@ -55,9 +55,33 @@ public class SpuController {
         return new Result();
     }
 
-    @GetMapping("/delete")
-    public Result delete(String id){
-        spuService.delete(id);
+    /**
+     *  真删除商品
+     * @param id
+     */
+    @GetMapping("/realdelete")
+    public Result realdelete(String id){
+        spuService.realdelete(id);
+        return new Result();
+    }
+
+    /**
+     *  假删除商品
+     * @param id
+     */
+    @GetMapping("/falsedelete")
+    public Result falsedelete(String id){
+        spuService.falsedelete(id);
+        return new Result();
+    }
+
+    /**
+     *  回收商品，修改spu表is_delete字段为0
+     * @param id
+     */
+    @GetMapping("/restore")
+    public Result restore(String id){
+        spuService.restore(id);
         return new Result();
     }
 
@@ -105,8 +129,8 @@ public class SpuController {
      * 批量上架
      * 处理后给前端返回处理的条数：返回值int
      */
-    @GetMapping("/putMany")
-    public Result  putMany(String[] ids){
+    @PostMapping("/putMany")
+    public Result  putMany(@RequestBody String[] ids){
         int count = spuService.putMany(ids);
         return new Result(0,"上架"+count+"个商品");
     }
