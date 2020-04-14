@@ -2,20 +2,19 @@ package com.qingcheng.service.impl;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.qingcheng.dao.OrderConfigMapper;
 import com.qingcheng.dao.OrderItemMapper;
 import com.qingcheng.dao.OrderLogMapper;
 import com.qingcheng.dao.OrderMapper;
 import com.qingcheng.entity.PageResult;
-import com.qingcheng.pojo.order.Order;
-import com.qingcheng.pojo.order.OrderItem;
-import com.qingcheng.pojo.order.OrderLog;
-import com.qingcheng.pojo.order.Orders;
+import com.qingcheng.pojo.order.*;
 import com.qingcheng.service.order.OrderService;
 import com.qingcheng.util.IdWorker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -36,10 +35,14 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private OrderLogMapper orderLogMapper;
 
+    @Autowired
+    private OrderConfigMapper orderConfigMapper;
+
     /**
      * 返回全部记录
      * @return
      */
+    @Override
     public List<Order> findAll() {
         return orderMapper.selectAll();
     }
@@ -50,6 +53,7 @@ public class OrderServiceImpl implements OrderService {
      * @param size 每页记录数
      * @return 分页结果
      */
+    @Override
     public PageResult<Order> findPage(int page, int size) {
         PageHelper.startPage(page,size);
         Page<Order> orders = (Page<Order>) orderMapper.selectAll();
@@ -61,6 +65,7 @@ public class OrderServiceImpl implements OrderService {
      * @param searchMap 查询条件
      * @return
      */
+    @Override
     public List<Order> findList(Map<String, Object> searchMap) {
         Example example = createExample(searchMap);
         return orderMapper.selectByExample(example);
@@ -73,6 +78,7 @@ public class OrderServiceImpl implements OrderService {
      * @param consignStatus
      * @return
      */
+    @Override
     public List<Order> findList1(String[] ids,String consignStatus) {
         Example example=new Example(Order.class);
         Example.Criteria criteria = example.createCriteria();
@@ -90,6 +96,7 @@ public class OrderServiceImpl implements OrderService {
      * 批量发货，前端给后端发送订单集合（post），后端代码接受后批量修改订单状态、发货状态、发货时间
      * @param orders
      */
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public void batchSend(List<Order> orders) {
         //判断运单号和物流公司是否为空
@@ -128,12 +135,60 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
+     * 订单超时处理逻辑
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void orderTimeOutLogic() {
+        //只有一条数据，id始终为1
+        //订单超时未付款 自动关闭,查询超时时间
+        OrderConfig orderConfig = orderConfigMapper.selectByPrimaryKey(1);
+        //超时时间（分） 60
+        Integer orderTimeout = orderConfig.getOrderTimeout();
+        //得到超时的时间点
+        LocalDateTime localDateTime = LocalDateTime.now().minusMinutes(orderTimeout);
+        //查询超过时间，没有付款，没有删除的订单
+        Example example = new Example(Order.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andLessThan("createTime",localDateTime);
+        criteria.andEqualTo("orderStatus",0);
+        criteria.andEqualTo("isDelete","0");
+        List<Order> orders = orderMapper.selectByExample(example);
+        for (Order o:orders){
+           //记录订单变动日志
+            OrderLog orderLog=new OrderLog();
+            // 操作员：系统
+            orderLog.setOperater("System");
+            orderLog.setOperateTime(new Date());
+            orderLog.setOrderId(o.getId());
+            //0待付款、1待发货、2已发货、3已完成、4已关闭
+            orderLog.setOrderStatus("4");
+            //0未支付、1已支付、2已退款
+            orderLog.setPayStatus(o.getPayStatus());
+            //0未发货、1已发货
+            orderLog.setConsignStatus(o.getConsignStatus());
+            //备注
+            orderLog.setRemarks("超时订单，系统自动关闭");
+            orderLogMapper.insert(orderLog);
+
+            //更改订单状态
+            o.setOrderStatus("4");
+            o.setCloseTime(new Date());
+            orderMapper.updateByPrimaryKeySelective(o);
+
+        }
+
+
+    }
+
+    /**
      * 分页+条件查询
      * @param searchMap
      * @param page
      * @param size
      * @return
      */
+    @Override
     public PageResult<Order> findPage(Map<String, Object> searchMap, int page, int size) {
         PageHelper.startPage(page,size);
         Example example = createExample(searchMap);
@@ -146,6 +201,7 @@ public class OrderServiceImpl implements OrderService {
      * @param id
      * @return
      */
+    @Override
     public Order findById(String id) {
         return orderMapper.selectByPrimaryKey(id);
     }
@@ -154,6 +210,7 @@ public class OrderServiceImpl implements OrderService {
      * 新增
      * @param order
      */
+    @Override
     public void add(Order order) {
         orderMapper.insert(order);
     }
@@ -162,6 +219,7 @@ public class OrderServiceImpl implements OrderService {
      * 修改
      * @param order
      */
+    @Override
     public void update(Order order) {
         orderMapper.updateByPrimaryKeySelective(order);
     }
@@ -170,6 +228,7 @@ public class OrderServiceImpl implements OrderService {
      *  删除
      * @param id
      */
+    @Override
     public void delete(String id) {
         orderMapper.deleteByPrimaryKey(id);
     }
@@ -178,6 +237,7 @@ public class OrderServiceImpl implements OrderService {
      * 查询订单id
      * @param id
      */
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public Orders findOrdersById(String id) {
         //查询order的id

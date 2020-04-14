@@ -2,26 +2,39 @@ package com.qingcheng.service.impl;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.qingcheng.dao.OrderItemMapper;
+import com.qingcheng.dao.ReturnOrderItemMapper;
 import com.qingcheng.dao.ReturnOrderMapper;
 import com.qingcheng.entity.PageResult;
+import com.qingcheng.pojo.order.OrderItem;
 import com.qingcheng.pojo.order.ReturnOrder;
+import com.qingcheng.pojo.order.ReturnOrderItem;
 import com.qingcheng.service.order.ReturnOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-@Service
+@Service(interfaceClass = ReturnOrderService.class)
 public class ReturnOrderServiceImpl implements ReturnOrderService {
 
     @Autowired
     private ReturnOrderMapper returnOrderMapper;
 
+    @Autowired
+    private ReturnOrderItemMapper returnOrderItemMapper;
+
+    @Autowired
+    private OrderItemMapper orderItemMapper;
+
     /**
      * 返回全部记录
      * @return
      */
+    @Override
     public List<ReturnOrder> findAll() {
         return returnOrderMapper.selectAll();
     }
@@ -32,6 +45,7 @@ public class ReturnOrderServiceImpl implements ReturnOrderService {
      * @param size 每页记录数
      * @return 分页结果
      */
+    @Override
     public PageResult<ReturnOrder> findPage(int page, int size) {
         PageHelper.startPage(page,size);
         Page<ReturnOrder> returnOrders = (Page<ReturnOrder>) returnOrderMapper.selectAll();
@@ -43,6 +57,7 @@ public class ReturnOrderServiceImpl implements ReturnOrderService {
      * @param searchMap 查询条件
      * @return
      */
+    @Override
     public List<ReturnOrder> findList(Map<String, Object> searchMap) {
         Example example = createExample(searchMap);
         return returnOrderMapper.selectByExample(example);
@@ -55,6 +70,7 @@ public class ReturnOrderServiceImpl implements ReturnOrderService {
      * @param size
      * @return
      */
+    @Override
     public PageResult<ReturnOrder> findPage(Map<String, Object> searchMap, int page, int size) {
         PageHelper.startPage(page,size);
         Example example = createExample(searchMap);
@@ -67,6 +83,7 @@ public class ReturnOrderServiceImpl implements ReturnOrderService {
      * @param id
      * @return
      */
+    @Override
     public ReturnOrder findById(Long id) {
         return returnOrderMapper.selectByPrimaryKey(id);
     }
@@ -75,6 +92,7 @@ public class ReturnOrderServiceImpl implements ReturnOrderService {
      * 新增
      * @param returnOrder
      */
+    @Override
     public void add(ReturnOrder returnOrder) {
         returnOrderMapper.insert(returnOrder);
     }
@@ -83,6 +101,7 @@ public class ReturnOrderServiceImpl implements ReturnOrderService {
      * 修改
      * @param returnOrder
      */
+    @Override
     public void update(ReturnOrder returnOrder) {
         returnOrderMapper.updateByPrimaryKeySelective(returnOrder);
     }
@@ -91,8 +110,86 @@ public class ReturnOrderServiceImpl implements ReturnOrderService {
      *  删除
      * @param id
      */
+    @Override
     public void delete(Long id) {
         returnOrderMapper.deleteByPrimaryKey(id);
+    }
+
+    /**
+     *  同意退款
+     *  根据id修改退货退款订单的状态为1(0申请 1同意 2驳回)，记录当前管理员id和当前时间。
+     *  需要做一些必要的验证，退款的金额不能大于原订单的金额。
+     * @param id
+     * @param money
+     * @param adminID
+     */
+    @Override
+    public void agreeRefund(String id, Integer money, Integer adminID) {
+        ReturnOrder returnOrder = returnOrderMapper.selectByPrimaryKey(id);
+        if (returnOrder==null){
+            throw new RuntimeException("退款订单不存在！");
+        }
+        //type 类型 CHAR 1.退货 2.退款
+        if (!"2".equals(returnOrder.getType())){
+            throw new RuntimeException("不是退款订单！");
+        }
+        //退款的金额不能大于原订单的金额
+        if (money>returnOrder.getReturnMoney()||money<0){
+            throw new RuntimeException("退款金额不合法！");
+        }
+        returnOrder.setReturnMoney(money);
+        returnOrder.setStatus("1");
+        returnOrder.setAdminId(adminID);
+        //处理时间
+        returnOrder.setDisposeTime(new Date());
+        returnOrderMapper.updateByPrimaryKeySelective(returnOrder);
+        //调用支付平台的退款接口
+    }
+
+    /**
+     * 驳回退款请求
+     * @param id
+     * @param remark 驳回理由
+     * @param adminId
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void rejectRefund(String id, String remark, Integer adminId) {
+        ReturnOrder returnOrder = returnOrderMapper.selectByPrimaryKey(id);
+        if (returnOrder==null){
+            throw new RuntimeException("退款订单不存在！");
+        }
+        //type 类型 CHAR 1.退货 2.退款
+        if (!"2".equals(returnOrder.getType())){
+            throw new RuntimeException("不是退款订单！");
+        }
+        if(remark.length()<5){
+            throw new RuntimeException("请输入驳回理由！");
+        }
+        returnOrder.setRemark(remark);
+        //驳回
+        returnOrder.setStatus("2");
+        returnOrder.setAdminId(adminId);
+        returnOrder.setDisposeTime(new Date());
+        returnOrderMapper.updateByPrimaryKeySelective(returnOrder);
+
+        //将原订单明细(tb_order_item)的退款状态改为未申请。
+        //tb_return_order_item订单明细ID和tb_order_item的id对应
+        // tb_return_order_item退货订单ID和tb_return_order的id对应
+        //①已知id=tb_return_order_item的returnOrderId，先通过id查询出tb_return_order_item全部信息
+        Example example = new Example(ReturnOrderItem.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("returnOrderId",id);
+        List<ReturnOrderItem> returnOrderItems = returnOrderItemMapper.selectByExample(example);
+        //for循环找出tb_return_order_item的orderItemId,因为它等于订单明细的id，就可以找到订单明细，修改状态
+        for (ReturnOrderItem r:returnOrderItems){
+            OrderItem orderItem = new OrderItem();
+            orderItem.setId(r.getOrderItemId().toString());
+            //退款状态改为未申请
+            orderItem.setIsReturn("0");
+            orderItemMapper.updateByPrimaryKeySelective(orderItem);
+        }
+
     }
 
     /**
