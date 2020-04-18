@@ -2,33 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8a8eb164-d78e-470d-97ef-4c256c8cb7b2" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/qingcheng_interface/src/main/java/com/qingcheng/service/order/CategoryReportService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/qingcheng_pojo/src/main/java/com/qingcheng/pojo/order/CategoryReport.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/qingcheng_service_order/src/main/java/com/qingcheng/dao/CategoryReportMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/qingcheng_service_order/src/main/java/com/qingcheng/service/impl/CategoryReportServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/qingcheng_web_manager/src/main/java/com/qingcheng/controller/order/CategoryReportController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/qingcheng_web_manager/src/main/webapp/js/echarts.common.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/qingcheng_web_manager/src/main/webapp/report/categoryReport.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/qingcheng_common/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/qingcheng_common/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/qingcheng_common_service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/qingcheng_common_service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/qingcheng_common_web/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/qingcheng_common_web/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/qingcheng_interface/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/qingcheng_interface/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/qingcheng_interface/qingcheng_interface.iml" beforeDir="false" afterPath="$PROJECT_DIR$/qingcheng_interface/qingcheng_interface.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/qingcheng_interface/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/qingcheng_interface/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/qingcheng_interface/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/qingcheng_interface/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/qingcheng_interface/target/qingcheng_interface-1.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/qingcheng_interface/target/qingcheng_interface-1.0-SNAPSHOT.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/qingcheng_pojo/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/qingcheng_pojo/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/qingcheng_service_business/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/qingcheng_service_business/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/qingcheng_service_config/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/qingcheng_service_config/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/qingcheng_service_goods/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/qingcheng_service_goods/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/qingcheng_service_order/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/qingcheng_service_order/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/qingcheng_service_system/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/qingcheng_service_system/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/qingcheng_service_user/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/qingcheng_service_user/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/qingcheng_web_manager/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/qingcheng_web_manager/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/qingcheng_web_manager/qingcheng_web_manager.iml" beforeDir="false" afterPath="$PROJECT_DIR$/qingcheng_web_manager/qingcheng_web_manager.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/qingcheng_web_manager/src/main/java/com/qingcheng/controller/order/OrderTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/qingcheng_web_manager/src/main/java/com/qingcheng/controller/order/OrderTask.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/qingcheng_web_manager/src/main/java/com/qingcheng/controller/order/ReturnOrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/qingcheng_web_manager/src/main/java/com/qingcheng/controller/order/ReturnOrderController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/classes/" />
     <ignored path="$PROJECT_DIR$/qingcheng_common/target/" />
