@@ -1,0 +1,10 @@
+0:0:0:0:0:0:0:1 - - [31/Mar/2020:23:51:17 +0800] "GET /goods/brand.html HTTP/1.1" 200 8740 http-bio-9101-exec-2 53
+0:0:0:0:0:0:0:1 - - [31/Mar/2020:23:51:17 +0800] "GET /plugins/font-awesome/css/font-awesome.min.css HTTP/1.1" 200 31004 http-bio-9101-exec-3 10
+0:0:0:0:0:0:0:1 - - [31/Mar/2020:23:51:17 +0800] "GET /css/style.css HTTP/1.1" 200 9781 http-bio-9101-exec-1 10
+0:0:0:0:0:0:0:1 - - [31/Mar/2020:23:51:17 +0800] "GET /js/axios.js HTTP/1.1" 200 12948 http-bio-9101-exec-4 5
+0:0:0:0:0:0:0:1 - - [31/Mar/2020:23:51:17 +0800] "GET /js/vue.js HTTP/1.1" 200 300248 http-bio-9101-exec-5 7
+0:0:0:0:0:0:0:1 - - [31/Mar/2020:23:51:17 +0800] "GET /js/elementui.js HTTP/1.1" 200 542433 http-bio-9101-exec-6 16
+0:0:0:0:0:0:0:1 - - [31/Mar/2020:23:51:21 +0800] "POST /brand/findPage.do?page=1&size=10 HTTP/1.1" 200 735 http-bio-9101-exec-6 1278
+0:0:0:0:0:0:0:1 - - [31/Mar/2020:23:51:24 +0800] "GET /favicon.ico HTTP/1.1" 404 973 http-bio-9101-exec-6 4
+0:0:0:0:0:0:0:1 - - [31/Mar/2020:23:51:48 +0800] "GET /brand/findById.do?id=1115 HTTP/1.1" 200 59 http-bio-9101-exec-6 36
+0:0:0:0:0:0:0:1 - - [31/Mar/2020:23:51:58 +0800] "POST /brand/findPage.do?page=3&size=10 HTTP/1.1" 200 1141 http-bio-9101-exec-6 31
