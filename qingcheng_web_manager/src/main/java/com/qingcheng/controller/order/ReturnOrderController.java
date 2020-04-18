@@ -79,7 +79,7 @@ public class ReturnOrderController {
      * @param id
      * @param remark 驳回理由
      */
-    @GetMapping("/agreeRefund")
+    @GetMapping("/rejectRefund")
     public Result rejectRefund(String id, String remark){
         //获取当前登陆人ID
         Integer adminID=0;
