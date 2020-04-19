@@ -9,6 +9,8 @@ import com.qingcheng.service.system.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -93,6 +95,43 @@ public class MenuServiceImpl implements MenuService {
      */
     public void delete(String id) {
         menuMapper.deleteByPrimaryKey(id);
+    }
+
+    /**
+     * 查询全部菜单
+     * 从数据库中读取菜单数据并展示。菜单为三级菜单
+     * @return
+     */
+    public List<Map> findMenu() {
+        //（不推荐）方式一：首先按照条件查询上级菜单id为0的列表（1级菜单），循环得到一级菜单id，查询二级菜单，嵌套循环得到每个二级菜单的id,查询三级菜单
+        //不推荐方式一的原因：和数据库需要频繁交互，交互次数=1+一级菜单数量+二级菜单数量
+        //方式二：首先把符合条件的菜单查询出来（列表，比如把全部查询出来），再通过内存（后端判断）判断出符合条件的记录（每一级的菜单列表）
+        List<Menu> all = findAll();
+        return findAllMenuByParentId(all,"0");
+    }
+
+    /**
+     * 查询下级菜单ID
+     * 内存（后端判断）判断,不和数据库交互
+     * @return
+     */
+    private  List<Map> findAllMenuByParentId(List<Menu> all,String parentId){
+        // List<Map>传给前端的格式
+        //List<Menu>是从数据库中查出来的所有数据集合
+        List<Map> listmap = new ArrayList<Map>();
+        for (Menu menu:all){
+            Map map = new HashMap();
+            if (menu.getParentId().equals(parentId)){
+                map.put("path",menu.getId());
+                map.put("title",menu.getName());
+                map.put("icon",menu.getIcon());
+                map.put("linkUrl",menu.getUrl());
+                //进行递归调用
+                map.put("children",findAllMenuByParentId(all,menu.getId()));
+                listmap.add(map);
+            }
+        }
+        return listmap;
     }
 
     /**

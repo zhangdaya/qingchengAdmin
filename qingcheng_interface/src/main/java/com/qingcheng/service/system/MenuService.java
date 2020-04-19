@@ -32,4 +32,10 @@ public interface MenuService {
 
     public void delete(String id);
 
+    /**
+     * 从数据库中读取菜单数据并展示。菜单为三级菜单
+     * @return
+     */
+    public List<Map> findMenu();
+
 }

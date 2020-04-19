@@ -1,3 +1,4 @@
+com\qingcheng\pojo\system\LoginLog.class
 com\qingcheng\pojo\order\OrderItem.class
 com\qingcheng\pojo\system\Admin.class
 com\qingcheng\pojo\goods\CategoryBrand.class
@@ -7,6 +8,7 @@ com\qingcheng\pojo\business\Activity.class
 com\qingcheng\pojo\goods\AuditStatus.class
 com\qingcheng\pojo\order\ReturnCause.class
 com\qingcheng\pojo\user\Areas.class
+com\qingcheng\pojo\system\Resource.class
 com\qingcheng\pojo\order\Preferential.class
 com\qingcheng\entity\PageResult.class
 com\qingcheng\pojo\goods\Spu.class

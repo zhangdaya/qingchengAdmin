@@ -1,6 +1,7 @@
 D:\qingchengAdmin\qingchengAdmin\qingcheng_pojo\src\main\java\com\qingcheng\pojo\goods\Para.java
 D:\qingchengAdmin\qingchengAdmin\qingcheng_pojo\src\main\java\com\qingcheng\pojo\goods\Template.java
 D:\qingchengAdmin\qingchengAdmin\qingcheng_pojo\src\main\java\com\qingcheng\entity\PageResult.java
+D:\qingchengAdmin\qingchengAdmin\qingcheng_pojo\src\main\java\com\qingcheng\pojo\system\LoginLog.java
 D:\qingchengAdmin\qingchengAdmin\qingcheng_pojo\src\main\java\com\qingcheng\pojo\system\Admin.java
 D:\qingchengAdmin\qingchengAdmin\qingcheng_pojo\src\main\java\com\qingcheng\pojo\goods\CategoryBrand.java
 D:\qingchengAdmin\qingchengAdmin\qingcheng_pojo\src\main\java\com\qingcheng\pojo\order\Orders.java
@@ -8,6 +9,7 @@ D:\qingchengAdmin\qingchengAdmin\qingcheng_pojo\src\main\java\com\qingcheng\pojo
 D:\qingchengAdmin\qingchengAdmin\qingcheng_pojo\src\main\java\com\qingcheng\pojo\order\ReturnCause.java
 D:\qingchengAdmin\qingchengAdmin\qingcheng_pojo\src\main\java\com\qingcheng\pojo\order\ReturnOrderItem.java
 D:\qingchengAdmin\qingchengAdmin\qingcheng_pojo\src\main\java\com\qingcheng\pojo\goods\Spec.java
+D:\qingchengAdmin\qingchengAdmin\qingcheng_pojo\src\main\java\com\qingcheng\pojo\system\Resource.java
 D:\qingchengAdmin\qingchengAdmin\qingcheng_pojo\src\main\java\com\qingcheng\pojo\order\OrderItem.java
 D:\qingchengAdmin\qingchengAdmin\qingcheng_pojo\src\main\java\com\qingcheng\pojo\goods\AuditStatus.java
 D:\qingchengAdmin\qingchengAdmin\qingcheng_pojo\src\main\java\com\qingcheng\pojo\order\Order.java
