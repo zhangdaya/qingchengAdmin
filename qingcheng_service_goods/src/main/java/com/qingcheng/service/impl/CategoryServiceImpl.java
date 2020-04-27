@@ -10,6 +10,8 @@ import com.qingcheng.service.goods.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -112,6 +114,34 @@ public class CategoryServiceImpl implements CategoryService {
         categoryMapper.deleteByPrimaryKey(id);
     }
 
+    /**
+     * 查询分类(树形结构)
+     * @return
+     */
+    public List<Map> findCategoryTree() {
+        Example example=new Example(Category.class);
+        Example.Criteria criteria = example.createCriteria();
+        //显示
+        criteria.andEqualTo("isShow","1");
+        //排序
+        example.setOrderByClause("seq");
+        List<Category> categories = categoryMapper.selectByExample(example);
+        List<Map> byParentId = findByParentId(categories, 0);
+        return byParentId;
+    }
+
+    private List<Map> findByParentId(List<Category> categoryList,Integer parentId){
+        List<Map> list = new ArrayList<Map>();
+        for (Category c : categoryList){
+            if(c.getParentId().equals(parentId)){
+                Map map = new HashMap();
+                map.put("name",c.getName());
+                map.put("menus",findByParentId(categoryList,c.getId()));
+                list.add(map);
+            }
+        }
+        return list;
+    }
     /**
      * 构建查询条件
      *
