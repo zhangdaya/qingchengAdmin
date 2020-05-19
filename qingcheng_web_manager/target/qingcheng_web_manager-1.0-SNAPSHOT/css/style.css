@@ -415,7 +415,7 @@ label input[type="radio"]:checked {
 .main{
 	height: 100vh;
 	min-width: 800px;
-	min-height: 600px;
+	min-height: 900px;
 	overflow: hidden;
 }
 .main aside{

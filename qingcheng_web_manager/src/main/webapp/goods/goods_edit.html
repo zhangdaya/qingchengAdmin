@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
     <!-- 页面meta -->
     <meta charset="utf-8">
@@ -26,34 +25,17 @@
             <div class="main">
                 <template>
                   <div class="activePublic ">
-                    <el-steps :space="200" :active="step"  finish-status="success">
-                      <el-step icon="none" class="iconStep1" style="flex-basis: 33%">
-                        <div slot='title'>
-                            <!-- <h2>第1步</h2> -->
-                            <p>选择商品分类</p>
-                            <span class="stepImg"><img src="../img/stepN.jpg"></span>
-                            
-                        </div>
-                        
+                    <el-steps :space="200" :active="step"  finish-status="success" :active="1" simple>
+                      <el-step icon="none" class="iconStep1" style="flex-basis: 33%" title="选择商品分类">
                       </el-step>
-                    
-                      <el-step icon="none" class="iconStep2" style="flex-basis: 33%">
-                        <div slot='title'>
-                          <!-- <h2>第2步</h2> -->
-                          <p>填写商品信息</p>
-                          <span class="stepImg"><img src="../img/stepN.jpg"></span>
-                        </div>
+                      <el-step icon="none" class="iconStep2" style="flex-basis: 33%" title="填写商品信息">
                       </el-step>
-                      <el-step icon="none" class="iconStep3" style="flex-basis: 33%">
-                        <div slot='title'>
-                          <!-- <h2>第3步</h2> -->
-                          <p>填写商品属性</p>
-                        </div>
+                      <el-step icon="none" class="iconStep3" style="flex-basis: 33%" title="填写商品属性">
                       </el-step>
                     </el-steps>
                     <!-- 第一步 选择商品分类-->
                       <div class="basicInfo" v-show='step1'>
-                        <h3 class="goodTit"><i></i>选择分类</h3>
+                        <h5><div class="seleInfo">您当前选择的商品类别是：{{firstInfo.name}}{{twoInfo.name}}{{threeInfo.name}}</div></h5>
                         <template>
                           <div>
                             <el-form>
@@ -67,7 +49,6 @@
                               <!-- 三级分类 -->
                               <transf-item :title-id="2" v-show='threeShow' ref="threeType" :district-list="threeData" @check-district="handleThreeType"></transf-item>
                             </el-form-item>
-                            <div class="seleInfo">您当前选择的商品类别是：{{firstInfo.name}}{{twoInfo.name}}{{threeInfo.name}}</div>
                           </el-form>
                           </div>
                         </template>
@@ -75,10 +56,10 @@
                       </div>
                       <!-- end -->
                       <!-- 第二步 选择商品信息-->
-                      <div class="basicInfo" v-show='step2'>
+                      <div class="basicInfo" v-show='step2' >
                         <template>
-                          <h3 class="goodTit"><i></i>基本信息</h3>
-                          <el-form :model="goods.spu" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm"  style="width:60%">
+                          <!--<h5 class="goodTit">基本信息</h5>-->
+                          <el-form :model="goods.spu" :rules="rules" ref="ruleForm" label-width="90px" class="demo-ruleForm"  style="width:50%;height:200%">
                             <el-form-item label="商品分类">
                               {{firstInfo.name}}{{twoInfo.name}}{{threeInfo.name}}<span class="btnEdit" @click='handleEdit'>编辑分类</span>
                             </el-form-item>
@@ -92,14 +73,14 @@
                               <el-select v-model="goods.spu.brandId"  filterable placeholder="请选择品牌">
                                 <el-option v-for="item in brandData" :label="item.name" :value="item.id">{{item.name}}</el-option>
                               </el-select>
-                              <p class="infoTip">如果您不输入商品货号，系统将自动生成一个唯一的货号。</p>
+                             <!-- <p class="infoTip">如果您不输入商品货号，系统将自动生成一个唯一的货号。</p>-->
                             </el-form-item>
                             <el-form-item label="模板" prop="freightId">
                               <el-select v-model="goods.spu.freightId" filterable placeholder="请选择模板" @change="handleChange">
                                 <el-option v-for="item in templateData"  :label="item.name":value="item.id" :key="item.id"></el-option>
                               </el-select>
                             </el-form-item>
-                            <h3 class="goodTit"><i></i>库存规格</h3>
+                            <!--<h5 class="goodTit">库存规格</h5>-->
                             <el-form-item label="商品货号" prop="sn">
                               <el-input v-model="goods.spu.sn"></el-input>
                             </el-form-item>
@@ -116,7 +97,7 @@
                       <div class="basicInfo" v-show='step3'>
                           <template>
                             <el-form :model="goods.spu" label-width="100px" class="demo-ruleForm">
-                              <h3 class="goodTit"><i></i>商品属性</h3>
+                              <h5 class="goodTit">商品属性</h5>
                               <el-form-item label="规格参数组">
                                   <!-- <el-input v-model="goods.spu.freight_name" class="inputW"></el-input> -->
                                   <el-select v-model="goods.spu.freightId" disabled>
@@ -450,11 +431,11 @@ var skus = [];
         },
       },
         template: `
-        <div class="el-transfer-panel district-panel">
-            <div class="el-transfer-panel__header">
+        <div class="el-transfer-panel district-panel"  >
+            <div class="el-transfer-panel__header" >
             {{title[titleId]}}
           </div>
-          <div class="el-transfer-panel__body">
+          <div class="el-transfer-panel__body" >
             <ul v-if="districtListMock.length > 0">
               <li v-for="(item,index) in districtListMock" :class="index==active?'active':''" class="el-transfer-panel__item" @click="handleCheckedChange(item,index)" :label="item" :key="item.id">
               {{item.name}}

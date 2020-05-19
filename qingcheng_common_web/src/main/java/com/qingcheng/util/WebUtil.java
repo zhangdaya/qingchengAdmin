@@ -43,7 +43,8 @@ public class WebUtil {
             reader.close();
             JSONObject jsStr = JSONObject.parseObject(result.toString());
             JSONArray jsData = (JSONArray) jsStr.get("data");
-            JSONObject data = (JSONObject) jsData.get(0);//位置
+            //位置
+            JSONObject data = (JSONObject) jsData.get(0);
             return (String) data.get("location");
         } catch (IOException e) {
             return "读取失败";

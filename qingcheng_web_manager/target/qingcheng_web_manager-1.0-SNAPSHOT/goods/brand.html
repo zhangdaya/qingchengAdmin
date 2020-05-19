@@ -166,7 +166,8 @@
                 });
             },
             save (){
-                this.pojo.image= this.imageUrl; //如页面有图片上传功能放开注释
+                //让图片上传后将图片url地址上传到数据库里
+                this.pojo.image= this.imageUrl;
                 axios.post(`/brand/${this.pojo.id==null?'add':'update'}.do`,this.pojo).then(response => {
                     this.fetchData (); //刷新列表
                     this.formVisible = false ;//关闭窗口
@@ -176,8 +177,10 @@
                 this.formVisible = true // 打开窗口
                 // 调用查询
                 axios.get(`/brand/findById.do?id=${id}`).then(response => {
+                    // 是先把服务器响应的数据存去一个实体类里
                     this.pojo = response.data;
-                    this.imageUrl=this.pojo.image //显示图片  如页面有图片上传功能放开注释
+                    //使图片显示在页面上，就是将数据库中图片地址给imageUrl
+                    this.imageUrl=this.pojo.image;
                 })
             },
             dele (id){

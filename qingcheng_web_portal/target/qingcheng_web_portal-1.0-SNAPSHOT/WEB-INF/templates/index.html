@@ -110,7 +110,7 @@
 					</div>
 					<div class="sort">
 						<div class="all-sort-list2">
-							<div class="item" th:each="category1:${categoryList}">
+							<div class="item" th:each="category1:${categoryTree}">
 								<h3>
 									<a href="" th:text="${category1.name}"></a>
 								</h3>
@@ -118,18 +118,19 @@
 									<div class="subitem">
 										<dl class="fore" th:each="category2:${category1.menus}">
 											<dt>
-												<a href=""  th:text="${category2.name}"></a>
+												<a href="" th:text="${category2.name}"></a>
 											</dt>
-											<dd>
+											<dd >
+
 												<em th:each="category3:${category2.menus}">
 													<a href="" th:text="${category3.name}"></a>
 												</em>
+
 											</dd>
 										</dl>
 									</div>
 								</div>
 							</div>
-
 						</div>
 					</div>
 				</div>
@@ -158,17 +159,17 @@
 			<div class="yui3-u Center banerArea">
 				<!--banner轮播-->
 				<div id="myCarousel" data-ride="carousel" data-interval="4000" class="sui-carousel slide">
-					<!--轮播图上面的三个点-->
+					<!--轮播图的点-->
 					<ol class="carousel-indicators">
 						<li data-target="#myCarousel" th:data-slide-to="${iterStat.index}" th:class="${iterStat.index==0?'active':''}" th:each="ad,iterStat:${lbt}"></li>
 					</ol>
-					<!--轮播图的图片-->
 					<div class="carousel-inner">
 						<div th:class="${iterStat.index==0?'active item':'item'}" th:each="ad,iterStat:${lbt}">
-							<a th:href="${ad.url}">
-								<img th:src="${ad.image}" />
+							<a th:href="@{${ad.url}}">
+								<img th:src="@{${ad.image}}" />
 							</a>
 						</div>
+
 					</div>
 					<a href="#myCarousel" data-slide="prev" class="carousel-control left">‹</a>
 					<a href="#myCarousel" data-slide="next" class="carousel-control right">›</a>

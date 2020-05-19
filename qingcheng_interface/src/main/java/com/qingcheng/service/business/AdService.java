@@ -39,4 +39,18 @@ public interface AdService {
      */
     public List<Ad> findByPosition(String position);
 
+    /**
+     * 将某个位置的广告存入缓存
+     * @param position
+     * 将广告轮播图放入缓存(缓存预热)
+     * 这种初始化时候调用很麻烦，因此初始化时应该调用将所有广告存入缓存的方法
+     */
+    public void saveAdToRedisByPosition(String position);
+
+    /**
+     * 将全部广告数据存入缓存
+     */
+    public void saveAllAdToRedis();
+
+
 }

@@ -10,27 +10,51 @@ import java.io.Serializable;
 @Table(name="tb_ad")
 public class Ad implements Serializable{
 
+	/**
+	 * ID
+	 */
 	@Id
-	private Integer id;//ID
+	private Integer id;
 
+	/**
+	 * 广告名称
+	 */
+	private String name;
 
-	
+	/**
+	 * 广告位置
+	 */
+	private String position;
 
-	private String name;//广告名称
+	/**
+	 * 开始时间
+	 */
+	private java.util.Date startTime;
 
-	private String position;//广告位置
+	/**
+	 * 到期时间
+	 */
+	private java.util.Date endTime;
 
-	private java.util.Date startTime;//开始时间
+	/**
+	 * 状态
+	 */
+	private String status;
 
-	private java.util.Date endTime;//到期时间
+	/**
+	 * 图片地址
+	 */
+	private String image;
 
-	private String status;//状态
+	/**
+	 * URL
+	 */
+	private String url;
 
-	private String image;//图片地址
-
-	private String url;//URL
-
-	private String remarks;//备注
+	/**
+	 * 备注
+	 */
+	private String remarks;
 
 	
 	public Integer getId() {

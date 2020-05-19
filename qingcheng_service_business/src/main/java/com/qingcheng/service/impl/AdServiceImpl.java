@@ -6,9 +6,12 @@ import com.qingcheng.dao.AdMapper;
 import com.qingcheng.entity.PageResult;
 import com.qingcheng.pojo.business.Ad;
 import com.qingcheng.service.business.AdService;
+import com.qingcheng.util.CacheKey;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +21,9 @@ public class AdServiceImpl implements AdService {
 
     @Autowired
     private AdMapper adMapper;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     /**
      * 返回全部记录
@@ -78,6 +84,7 @@ public class AdServiceImpl implements AdService {
      */
     public void add(Ad ad) {
         adMapper.insert(ad);
+        saveAdToRedisByPosition(ad.getPosition());
     }
 
     /**
@@ -85,7 +92,14 @@ public class AdServiceImpl implements AdService {
      * @param ad
      */
     public void update(Ad ad) {
+        //与新增不同，如果修改时还改变了广告位置，则两次位置不同
+        //先查询没有更改前的广告位置
+        String position = adMapper.selectByPrimaryKey(ad.getId()).getPosition();
         adMapper.updateByPrimaryKeySelective(ad);
+        //数据库修改以后，判断更改前后是否相同,不相同则缓存更新
+        if (!position.equals(ad.getPosition())){
+            saveAdToRedisByPosition(ad.getPosition());
+        }
     }
 
     /**
@@ -93,15 +107,29 @@ public class AdServiceImpl implements AdService {
      * @param id
      */
     public void delete(Integer id) {
+        String position = adMapper.selectByPrimaryKey(id).getPosition();
+        saveAdToRedisByPosition(position);
         adMapper.deleteByPrimaryKey(id);
     }
 
     /**
      * 根据广告位置查询广告列表,将广告列表返回给前端
+     * 将某个位置的广告存入缓存
      * @param position
      * @return
      */
     public List<Ad> findByPosition(String position) {
+        System.out.println("从缓存中查询广告列表"+position);
+        return (List<Ad>)redisTemplate.boundHashOps(CacheKey.AD).get(position);
+    }
+
+    /**
+     * 将某个位置的广告存入缓存
+     * @param position
+     * 将广告轮播图放入缓存(缓存预热)
+     */
+    public void saveAdToRedisByPosition(String position) {
+        //查询
         Example example = new Example(Ad.class);
         Example.Criteria criteria = example.createCriteria();
         //广告位置
@@ -112,8 +140,34 @@ public class AdServiceImpl implements AdService {
         criteria.andGreaterThanOrEqualTo("endTime",new Date());
         //状态有效
         criteria.andEqualTo("status","1");
-        return adMapper.selectByExample(example);
+        List<Ad> ads = adMapper.selectByExample(example);
+        //放入Redis
+        redisTemplate.boundHashOps(CacheKey.AD).put(position,ads);
     }
+
+    /**
+     * 返回所有的广告位置
+     * @return
+     */
+    private List<String> getPositionList(){
+        List<String> list = new ArrayList<String>();
+        //首页广告轮播图
+        list.add("index_lb");
+        //。。。其它广告类型省略
+        return list;
+    }
+
+    /**
+     * 将全部广告数据存入缓存
+     * 怎么做？循环saveAdToRedisByPosition(String position)方法
+     */
+    public void saveAllAdToRedis() {
+        //循环所有的广告位置
+        for (String position:getPositionList()){
+            saveAdToRedisByPosition(position);
+        }
+    }
+
 
     /**
      * 构建查询条件
