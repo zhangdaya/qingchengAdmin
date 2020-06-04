@@ -14,10 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service(interfaceClass = SpuService.class)
 public class SpuServiceImpl implements SpuService {
@@ -140,7 +137,7 @@ public class SpuServiceImpl implements SpuService {
     /**
      * 假删除商品
      *
-     * @param id
+     * @param id(spu的id)
      */
     public void falsedelete(String id) {
         //逻辑删除商品,修改spu表is_delete字段为1
@@ -148,6 +145,15 @@ public class SpuServiceImpl implements SpuService {
         spu.setId(id);
         spu.setIsDelete("1");
         spuMapper.updateByPrimaryKeySelective(spu);
+
+        //删除缓存中的价格
+        Map map = new HashMap();
+        map.put("spuId",id);
+        //条件查询
+        List<Sku> list = skuService.findList(map);
+        for (Sku sku:list){
+            skuService.deletePriceFromRedis(sku.getId());
+        }
     }
 
     /**

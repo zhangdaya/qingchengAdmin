@@ -136,6 +136,14 @@ public class SkuServiceImpl implements SkuService {
     }
 
     /**
+     * 根据sku id 删除商品价格缓存
+     * @param id
+     */
+    public void deletePriceFromRedis(String id) {
+        redisTemplate.boundHashOps(CacheKey.SKU_PRICE).delete(id);
+    }
+
+    /**
      * 构建查询条件
      * @param searchMap
      * @return

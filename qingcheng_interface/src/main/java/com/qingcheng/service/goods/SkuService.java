@@ -48,4 +48,9 @@ public interface SkuService {
      */
     public void savePriceToRedisById(String id,Integer price);
 
+    /**
+     * 根据sku id 删除商品价格缓存
+     * @param id
+     */
+    public void deletePriceFromRedis(String id);
 }
